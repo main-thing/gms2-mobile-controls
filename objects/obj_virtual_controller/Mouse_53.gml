@@ -1,0 +1,2 @@
+vkey_controls_edit_mode()
+vkey_handle_special_buttons()
