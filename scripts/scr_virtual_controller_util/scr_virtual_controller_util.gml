@@ -1,21 +1,42 @@
 //TODO: READ FROM AN EXTERNAL LANGUAGE FILE SO PEOPLE CAN MAKE CUSTOM LANGAUAGES FOR TEXT HERE.
 function processcommand(commandstring, silentcommand = false, is_trigger = false)
 {
-	var _string = (PRE_2023_GM ? _string_trim : string_trim)(commandstring);
-	if(ENABLE_EXTRA_COMMAND_PROCESSING)
+	if(PRE_2023_GM)
 	{
-		if(string_pos("gml", _string) == 1 || string_pos("startupcommand", _string) == 1 || string_pos("savecommand", _string) == 1)
-			return docommand(_string, silentcommand, is_trigger)
-	}
+		var _string = _string_trim(commandstring);
+		if(ENABLE_EXTRA_COMMAND_PROCESSING)
+		{
+			if(string_pos("gml", _string) == 1 || string_pos("startupcommand", _string) == 1 || string_pos("savecommand", _string) == 1)
+				return docommand(_string, silentcommand, is_trigger)
+		}
 		
-	if(string_pos(";", _string) != 0) 
-	{
-		var _commands = (PRE_2023_GM ? _string_split : string_split)(_string + ";", ";");
-		for(var i = 0; i < array_length(_commands); i++)
-			docommand(_commands[i], silentcommand, is_trigger);
+		if(string_pos(";", _string) != 0) 
+		{
+			var _commands = _string_split(_string + ";", ";");
+			for(var i = 0; i < array_length(_commands); i++)
+				docommand(_commands[i], silentcommand, is_trigger);
+		}
+		else 
+			docommand(_string, silentcommand, is_trigger);
 	}
-	else 
-		docommand(_string, silentcommand, is_trigger);
+	else
+	{
+		var _string = string_trim(commandstring);
+		if(ENABLE_EXTRA_COMMAND_PROCESSING)
+		{
+			if(string_pos("gml", _string) == 1 || string_pos("startupcommand", _string) == 1 || string_pos("savecommand", _string) == 1)
+				return docommand(_string, silentcommand, is_trigger)
+		}
+		
+		if(string_pos(";", _string) != 0) 
+		{
+			var _commands = string_split(_string + ";", ";");
+			for(var i = 0; i < array_length(_commands); i++)
+				docommand(_commands[i], silentcommand, is_trigger);
+		}
+		else 
+			docommand(_string, silentcommand, is_trigger);
+	}
 }
 
 function int64_safe(str)
@@ -40,17 +61,34 @@ function register_vkey_edit_command(func, name, description, key_restriction = V
 
 function docommand(commandstring, silentcommand = false, is_trigger = false) 
 {
-	var _args = string_split(commandstring, " ");
-	var _cmd = _args[0];
-	array_delete(_args, 0, 1);
-	
-	
-	if(global.vkeyui_debug_table[$ _cmd] != undefined)
+	if(PRE_2023_GM)
 	{
-		script_execute_ext(global.vkeyui_debug_table[$ _cmd][0], _args)
-	}
+		var _args = _string_split(commandstring, " ");
+		var _cmd = _args[0];
+		array_delete(_args, 0, 1);
 	
-	show_debug_message(_args);
+	
+		if(global.vkeyui_debug_table[$ _cmd] != undefined)
+		{
+			script_execute_ext(global.vkeyui_debug_table[$ _cmd][0], _args)
+		}
+	
+		show_debug_message(_args);
+	}
+	else
+	{
+		var _args = string_split(commandstring, " ");
+		var _cmd = _args[0];
+		array_delete(_args, 0, 1);
+	
+	
+		if(global.vkeyui_debug_table[$ _cmd] != undefined)
+		{
+			script_execute_ext(global.vkeyui_debug_table[$ _cmd][0], _args)
+		}
+	
+		show_debug_message(_args);
+	}
 }
 
 function asset_get_index_vkey(name)
@@ -230,28 +268,58 @@ function virtual_key_load(json = "")
 
 function processedit(commandstring) 
 {
-	var _string = (PRE_2023_GM ? _string_trim : string_trim)(commandstring);
-	if(string_pos(";", _string) != 0) 
+	if(PRE_2023_GM)
 	{
-		var _commands = (PRE_2023_GM ? _string_split : string_split)(_string + ";", ";");
-		for(var i = 0; i < array_length(_commands); i++)
-			doedit(_commands[i]);
-	} 
+		var _string = _string_trim(commandstring);
+		if(string_pos(";", _string) != 0) 
+		{
+			var _commands = _string_split(_string + ";", ";");
+			for(var i = 0; i < array_length(_commands); i++)
+				doedit(_commands[i]);
+		} 
+		else
+		{
+			doedit(_string);
+		}
+	}
 	else
 	{
-		doedit(_string);
+		var _string = string_trim(commandstring);
+		if(string_pos(";", _string) != 0) 
+		{
+			var _commands = string_split(_string + ";", ";");
+			for(var i = 0; i < array_length(_commands); i++)
+				doedit(_commands[i]);
+		} 
+		else
+		{
+			doedit(_string);
+		}
 	}
 }
 
 function doedit(commandstring)
 {
-	var _args = string_split(commandstring, " ");
-	var _cmd = _args[0];
-	array_delete(_args, 0, 1);
+	if(PRE_2023_GM)
+	{
+		var _args = _string_split(commandstring, " ");
+		var _cmd = _args[0];
+		array_delete(_args, 0, 1);
 	
 	
-	if(global.vkeyui_edit_table[$ _cmd] != undefined)
-		script_execute_ext(global.vkeyui_edit_table[$ _cmd][0], _args);
+		if(global.vkeyui_edit_table[$ _cmd] != undefined)
+			script_execute_ext(global.vkeyui_edit_table[$ _cmd][0], _args);
+	}
+	else
+	{
+		var _args = string_split(commandstring, " ");
+		var _cmd = _args[0];
+		array_delete(_args, 0, 1);
+	
+	
+		if(global.vkeyui_edit_table[$ _cmd] != undefined)
+			script_execute_ext(global.vkeyui_edit_table[$ _cmd][0], _args);
+	}
 }
 
 // Doing this to avoid unnessary pointer allocations to methods as they seem to not be destroyed.
@@ -497,7 +565,8 @@ function vkey_from_input(input)
 		case "down+right":
 			_choice = "down right";
 	}
-		
+	_choices[$ _choice] = _choices[$ _choice] == undefined ? {} : _choices[$ _choice];
+	
 	instance = instance_create_depth(display_get_gui_width() / 2, display_get_gui_height() / 2, -9999, obj_virtual_controller, _choices[$ _choice]);
 				
 	with(instance)
