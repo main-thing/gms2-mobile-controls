@@ -2,7 +2,7 @@
 Custom mobile controls for your GameMaker Studio 2 Projects
 
 # Using this your project
-1. Download latest release from releases.
+1. Download latest [release](https://github.com/main-thing/gms2-mobile-controls/releases/tag/v1.0b).
 2. Tools > Import Local Package.
 3. Add all resources to project.
 4. In the starting room of the project (🏠) add the obj_virtual_controller_manager object into your instance layer.
