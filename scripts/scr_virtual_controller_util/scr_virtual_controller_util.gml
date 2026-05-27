@@ -95,7 +95,7 @@ function createvbutton(loadedbutton)
 		vkey_init_input();
 }
 
-function virtual_key_save(exportdialog = false) 
+function virtual_key_save(exportdialog = false, save = false) 
 {
 	var mybuttons = array_create(0);
 	with(obj_virtual_controller) 
@@ -164,15 +164,22 @@ function virtual_key_save(exportdialog = false)
 			
 		array_push(mybuttons, buttonproperties);
 	}
+	
 	if(exportdialog)
 	{
 		show_message_async("Copied to clipboard");
 		clipboard_set_text(json_stringify(mybuttons));
 	}
-	else
+	
+	if(save)
 	{
-		return json_stringify(mybuttons);
+		var buff = buffer_create(0, buffer_grow, 1);
+		buffer_write(buff, buffer_string, json_stringify(mybuttons));
+		buffer_save(buff, "buttonpositions.save");
+		buffer_delete(buff);
 	}
+	else
+		return json_stringify(mybuttons);
 }
 
 function get_virtual_key_save()
@@ -547,7 +554,7 @@ function vkey_handle_special_buttons()
 			}
 			else
 			{
-				virtual_key_save();
+				virtual_key_save(false, true);
 				with(obj_virtual_controller_manager)
 					event_user(0);
 			}
@@ -569,7 +576,7 @@ function vkey_handle_special_buttons()
 					prompt = get_string_async("load buttons: help, load, default, controls.png, [{\"x\": 928.0,...}]", ((clipboard_has_text() && (string_pos("[", _temp_text) == 1)) ? _temp_text : ""));
 				break
 				case VKEYUI_KEY_TYPES.SAVE:
-					virtual_key_save(true);
+					virtual_key_save(true, true);
 				break
 				case VKEYUI_KEY_TYPES.COLOR:
 					vkey_prompt_color();

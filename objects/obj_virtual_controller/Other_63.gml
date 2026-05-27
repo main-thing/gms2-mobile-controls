@@ -17,9 +17,6 @@ switch(keycodes[0])
 	case VKEYUI_KEY_TYPES.LOAD:
 		virtual_key_load(last_input)
 	break
-	case VKEYUI_KEY_TYPES.SAVE:
-		virtual_key_save(last_input)
-	break
 	case VKEYUI_KEY_TYPES.ADD:
 		vkey_from_input(last_input)
 	break
