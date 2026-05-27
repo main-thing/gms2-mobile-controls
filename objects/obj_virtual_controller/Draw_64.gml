@@ -1,6 +1,4 @@
 draw_self();
-if(position_meeting(device_mouse_x_to_gui(0), device_mouse_y_to_gui(0), self))
-	draw_text(x, y, buttonlockable);
 
 if(keycodes[0] == VKEYUI_KEY_TYPES.JOYSTICK)
 {

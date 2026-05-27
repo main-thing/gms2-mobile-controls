@@ -1,3 +1,5 @@
+// This has to placed here due to asset load order.
+global.vkeyui_edit_table = {};
 register_vkey_edit_command
 (
 	function()

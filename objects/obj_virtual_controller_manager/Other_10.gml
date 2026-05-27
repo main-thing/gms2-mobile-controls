@@ -9,7 +9,7 @@ with(obj_virtual_controller)
 	// Skip out on other keys as they don't need to use virtual keys
 	if(keycodes[0] != VKEYUI_KEY_TYPES.NONE || buttonlockable)
 		continue;
-		
+	
 	// Add the keys for everything else
 	for(var i = 1; i < array_length(keycodes); i++)
 	{

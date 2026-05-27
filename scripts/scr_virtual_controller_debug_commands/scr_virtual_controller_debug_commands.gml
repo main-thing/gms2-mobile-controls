@@ -1,3 +1,5 @@
+// This has to placed here due to asset load order.
+global.vkeyui_debug_table = {};
 register_vkey_debug_command
 (
 	function()

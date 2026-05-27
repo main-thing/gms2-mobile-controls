@@ -1,11 +1,7 @@
 //TODO: READ FROM AN EXTERNAL LANGUAGE FILE SO PEOPLE CAN MAKE CUSTOM LANGAUAGES FOR TEXT HERE.
-
-// This has to placed here to to asset load order.
-global.vkeyui_debug_table = {};
-global.vkeyui_edit_table = {};
 function processcommand(commandstring, silentcommand = false, is_trigger = false)
 {
-	var _string = (PRE_2023_GM ? string_trim : _string_trim)(commandstring);
+	var _string = (PRE_2023_GM ? _string_trim : string_trim)(commandstring);
 	if(ENABLE_EXTRA_COMMAND_PROCESSING)
 	{
 		if(string_pos("gml", _string) == 1 || string_pos("startupcommand", _string) == 1 || string_pos("savecommand", _string) == 1)
@@ -14,7 +10,7 @@ function processcommand(commandstring, silentcommand = false, is_trigger = false
 		
 	if(string_pos(";", _string) != 0) 
 	{
-		var _commands = (PRE_2023_GM ? string_split : _string_split)(_string + ";", ";");
+		var _commands = (PRE_2023_GM ? _string_split : string_split)(_string + ";", ";");
 		for(var i = 0; i < array_length(_commands); i++)
 			docommand(_commands[i], silentcommand, is_trigger);
 	}
@@ -99,7 +95,7 @@ function createvbutton(loadedbutton)
 		vkey_init_input();
 }
 
-function virtual_key_save(export = false) 
+function virtual_key_save(exportdialog = false) 
 {
 	var mybuttons = array_create(0);
 	with(obj_virtual_controller) 
@@ -123,7 +119,21 @@ function virtual_key_save(export = false)
 		for(var i = 0; i < array_length(_vars); i++)
 		{
 			if(!is_vkey_variable_blacklisted(_vars[i]) && !is_vkey_variable_special(_vars[i]))
-				variable_struct_set(buttonproperties, _vars[i], variable_instance_get(id, _vars[i]));
+			{
+				var _val = variable_instance_get(id, _vars[i]);
+				switch(typeof(_val))
+				{
+					case "array":
+						buttonproperties[$ _vars[i]] = [];
+						 array_copy(buttonproperties[$ _vars[i]], 0, _val, 0, array_length(_val));
+					break;
+					
+					default:
+						variable_struct_set(buttonproperties, _vars[i], _val);
+					break;
+				}
+				
+			}
 		}
 		
 		buttonproperties.sprite = sprite_get_name(sprite);
@@ -132,7 +142,7 @@ function virtual_key_save(export = false)
 		
 		if(keycodes[0] == VKEYUI_KEY_TYPES.JOYSTICK)
 		{
-			buttonproperties.spr_joystick = sprite_get_name(spr_joystick); // this caused the broken joystick bug
+			buttonproperties.spr_joystick = sprite_get_name(spr_joystick);
 			buttonproperties.stick_xscale = stick_xscale;
 			buttonproperties.stick_yscale = stick_yscale;
 			buttonproperties.joy_deadzone_x = joy_deadzone_x;
@@ -148,10 +158,13 @@ function virtual_key_save(export = false)
 				break;
 		}
 		
-		buttonproperties.keycodes[0] = _key_type_string;
+		buttonproperties[$ "keycodes"][0] = _key_type_string;
+		
+		//show_message("before:" + string(oldkeytype) + "\nafter:" + string(keycodes[0]) + "\nbuttonproperty:" + string(buttonproperties.keycodes[0]));
+			
 		array_push(mybuttons, buttonproperties);
 	}
-	if(export)
+	if(exportdialog)
 	{
 		show_message_async("Copied to clipboard");
 		clipboard_set_text(json_stringify(mybuttons));
