@@ -10,6 +10,7 @@
     {"name":"spr_button_z","order":16,"path":"sprites/spr_button_z/spr_button_z.yy",},
     {"name":"spr_button_grid","order":8,"path":"sprites/spr_button_grid/spr_button_grid.yy",},
     {"name":"_string_trim","order":1,"path":"scripts/_string_trim/_string_trim.yy",},
+    {"name":"scr_startupcommand","order":9,"path":"scripts/scr_startupcommand/scr_startupcommand.yy",},
     {"name":"spr_button_cog_big","order":4,"path":"sprites/spr_button_cog_big/spr_button_cog_big.yy",},
     {"name":"spr_button_grid_pressed","order":9,"path":"sprites/spr_button_grid_pressed/spr_button_grid_pressed.yy",},
     {"name":"spr_button_shoot_big","order":15,"path":"sprites/spr_button_shoot_big/spr_button_shoot_big.yy",},

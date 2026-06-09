@@ -6,8 +6,8 @@ if(keycodes[0] == VKEYUI_KEY_TYPES.JOYSTICK)
 		draw_sprite_ext(spr_joystick, 0, x + joy_x, y + joy_y, image_xscale * stick_xscale, image_yscale * stick_yscale, 0, joy_blend, image_alpha);
 	if(global.vkeyui_movingvkeys && global.vkeyui_selectedvbutton == self)
 	{
-		draw_set_color(c_yellow)
-		draw_set_alpha(0.5)
+		draw_set_color(c_yellow);
+		draw_set_alpha(0.5);
 		draw_rectangle(
 			bbox_left, 
 			bbox_top,
@@ -35,5 +35,6 @@ if(keycodes[0] == VKEYUI_KEY_TYPES.JOYSTICK)
 			bbox_right,
 			bbox_bottom, 
 		true);
+		draw_set_alpha(1)
 	}
 }

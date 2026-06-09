@@ -1,9 +1,7 @@
 /// @description Handle vkeys
 with(obj_virtual_controller)
 {
-	for(var i = 0; i < array_length(vkeys); i++)
-		virtual_key_delete(vkeys[i]);
-	
+
 	vkeys = [];
 	
 	// Skip out on other keys as they don't need to use virtual keys

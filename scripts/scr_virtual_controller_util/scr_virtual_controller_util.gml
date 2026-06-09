@@ -4,9 +4,9 @@ function processcommand(commandstring, silentcommand = false, is_trigger = false
 	if(PRE_2023_GM)
 	{
 		var _string = _string_trim(commandstring);
-		if(ENABLE_EXTRA_COMMAND_PROCESSING)
+		if(ENABLE_STARTUP_COMMANDS)
 		{
-			if(string_pos("gml", _string) == 1 || string_pos("startupcommand", _string) == 1 || string_pos("savecommand", _string) == 1)
+			if(string_pos("startupcommand", _string) == 1)
 				return docommand(_string, silentcommand, is_trigger)
 		}
 		
@@ -22,9 +22,9 @@ function processcommand(commandstring, silentcommand = false, is_trigger = false
 	else
 	{
 		var _string = string_trim(commandstring);
-		if(ENABLE_EXTRA_COMMAND_PROCESSING)
+		if(ENABLE_STARTUP_COMMANDS)
 		{
-			if(string_pos("gml", _string) == 1 || string_pos("startupcommand", _string) == 1 || string_pos("savecommand", _string) == 1)
+			if(string_pos("startupcommand", _string) == 1)
 				return docommand(_string, silentcommand, is_trigger)
 		}
 		
@@ -54,9 +54,9 @@ function register_vkey_debug_command(func, name, description)
 	global.vkeyui_debug_table[$ name] = [func, description]
 }
 
-function register_vkey_edit_command(func, name, description, key_restriction = VKEYUI_KEY_TYPES.NONE)
+function register_vkey_edit_command(func, name, description, key_restriction = VKEYUI_KEY_TYPES.NONE, show = true)
 {
-	global.vkeyui_edit_table[$ name] = [func, description, key_restriction]
+	global.vkeyui_edit_table[$ name] = [func, description, key_restriction, show]
 }
 
 function docommand(commandstring, silentcommand = false, is_trigger = false) 
@@ -70,7 +70,8 @@ function docommand(commandstring, silentcommand = false, is_trigger = false)
 	
 		if(global.vkeyui_debug_table[$ _cmd] != undefined)
 		{
-			script_execute_ext(global.vkeyui_debug_table[$ _cmd][0], _args)
+			var _func = global.vkeyui_debug_table[$ _cmd][0];
+			script_execute_ext(_func, _args);
 		}
 	
 		show_debug_message(_args);
@@ -81,12 +82,11 @@ function docommand(commandstring, silentcommand = false, is_trigger = false)
 		var _cmd = _args[0];
 		array_delete(_args, 0, 1);
 	
-	
 		if(global.vkeyui_debug_table[$ _cmd] != undefined)
 		{
-			script_execute_ext(global.vkeyui_debug_table[$ _cmd][0], _args)
+			var _func = global.vkeyui_debug_table[$ _cmd][0];
+			script_execute_ext(_func, _args);
 		}
-	
 		show_debug_message(_args);
 	}
 }
@@ -213,7 +213,7 @@ function virtual_key_save(exportdialog = false, save = false)
 	{
 		var buff = buffer_create(0, buffer_grow, 1);
 		buffer_write(buff, buffer_string, json_stringify(mybuttons));
-		buffer_save(buff, "buttonpositions.save");
+		buffer_save(buff, BUTTON_SAVE_LOCATION);
 		buffer_delete(buff);
 	}
 	else
@@ -222,9 +222,9 @@ function virtual_key_save(exportdialog = false, save = false)
 
 function get_virtual_key_save()
 {
-	if(file_exists("buttonpositions.save")) 
+	if(file_exists(BUTTON_SAVE_LOCATION)) 
 	{
-		var buttonbuffer = buffer_load("buttonpositions.save");
+		var buttonbuffer = buffer_load(BUTTON_SAVE_LOCATION);
 		var buttonstring = buffer_read(buttonbuffer, buffer_string);
 		buffer_delete(buttonbuffer);
 		return buttonstring;
@@ -418,7 +418,7 @@ function vkey_from_input(input)
 		{
 			keycodes : [VKEYUI_KEY_TYPES.BIND, commands],
 			sprite : spr_button_debug,
-			forceshowbind : (string_pos("togglebinds", data.keycodes[1]) == 1)
+			forceshowbind : (string_pos("togglebinds", commands) == 1)
 		}
 		
 		instance = instance_create_depth(display_get_gui_width() / 2, display_get_gui_height() / 2, -9999, obj_virtual_controller, data);
@@ -520,7 +520,7 @@ function vkey_from_input(input)
 			
 		"escape" :
 		{
-			keycodes : [VKEYUI_KEY_TYPES.NONE, vk_escape],
+			keycodes : [VKEYUI_KEY_TYPES.NONE, vk_enter],
 			sprite : spr_button_escape_big
 		},
 			
@@ -565,6 +565,7 @@ function vkey_from_input(input)
 		case "down+right":
 			_choice = "down right";
 	}
+	
 	_choices[$ _choice] = _choices[$ _choice] == undefined ? {} : _choices[$ _choice];
 	
 	instance = instance_create_depth(display_get_gui_width() / 2, display_get_gui_height() / 2, -9999, obj_virtual_controller, _choices[$ _choice]);
@@ -595,12 +596,22 @@ function vkey_prompt_color()
 {
 	var _cmds = variable_struct_get_names(global.vkeyui_edit_table);
 	var _helptext = "Edit button: \n";
-	for(var i = 0; i < array_length(_cmds); i++)
+	if(instance_exists(global.vkeyui_selectedvbutton))
 	{
-		var _cmdarr = global.vkeyui_edit_table[$ _cmds[i]];
-		if(_cmdarr[2] == VKEYUI_KEY_TYPES.NONE || (instance_exists(global.vkeyui_selectedvbutton) && global.vkeyui_selectedvbutton.keycodes[0] == _cmdarr[2]))
-			_helptext += _cmdarr[1] + "\n"; // append description
+		for(var i = 0; i < array_length(_cmds); i++)
+		{
+			var _cmdarr = global.vkeyui_edit_table[$ _cmds[i]];
+			if(instance_exists(global.vkeyui_selectedvbutton) && (global.vkeyui_selectedvbutton.keycodes[0] == _cmdarr[2] || _cmdarr[2] == VKEYUI_KEY_TYPES.NONE) && _cmdarr[3])
+				_helptext += _cmdarr[1] + "\n"; // append description
+		}
 	}
+	else
+	{
+		show_message_async("Select a button first before trying to edit.");
+		return;
+	}
+	
+	
 					
 	prompt = get_string_async(_helptext, last_input);
 }

@@ -1,5 +1,6 @@
 // This has to placed here due to asset load order.
 global.vkeyui_edit_table = {};
+
 register_vkey_edit_command
 (
 	function()
@@ -10,7 +11,9 @@ register_vkey_edit_command
 		}
 	},
 	"gridsize",
-	"gridsize (number)"
+	"gridsize (num)",
+	VKEYUI_KEY_TYPES.NONE,
+	false
 );
 
 register_vkey_edit_command
@@ -33,7 +36,7 @@ register_vkey_edit_command
 		}
 	},
 	"color",
-	"color r(number) g(number) b(number)"
+	"color r(num) g(num) b(num)"
 );
 
 register_vkey_edit_command
@@ -55,7 +58,9 @@ register_vkey_edit_command
 		}
 	},
 	"pressed_color",
-	"pressed_color r(number) g(number) b(number)"
+	"pressed_color r(num) g(num) b(num)",
+	VKEYUI_KEY_TYPES.NONE,
+	false
 );
 
 register_vkey_edit_command
@@ -69,7 +74,9 @@ register_vkey_edit_command
 		}
 	},
 	"scale_x",
-	"scale_x (number)"
+	"scale_x (num)",
+	VKEYUI_KEY_TYPES.NONE,
+	false
 );
 
 register_vkey_edit_command
@@ -83,26 +90,28 @@ register_vkey_edit_command
 		}
 	},
 	"scale_y",
-	"scale_y (number)"
+	"scale_y (num)",
+	VKEYUI_KEY_TYPES.NONE,
+	false
 );
 
 register_vkey_edit_command
 (
 	function()
 	{
-		if(argument_count > 1)
+		if(argument_count > 0)
 		{
 			with(global.vkeyui_selectedvbutton)
 			{
 				image_xscale = real_safe(argument[0]);
-				image_yscale = real_safe(argument[1]);
+				image_yscale = real_safe(argument[0]);
 				if(keycodes[0] == VKEYUI_KEY_TYPES.JOYSTICK)
-					radius = sprite_width / 2
+					radius = sprite_width / 2;
 			}
 		}
 	},
 	"scale",
-	"scale (number)"
+	"scale (num)"
 );
 
 register_vkey_edit_command
@@ -119,7 +128,7 @@ register_vkey_edit_command
 		}
 	},
 	"alpha",
-	"alpha (number)"
+	"alpha (num)"
 );
 
 register_vkey_edit_command
@@ -133,12 +142,12 @@ register_vkey_edit_command
 				sprite_index = asset_get_index_vkey(argument[0]);
 				sprite = asset_get_index_vkey(argument[0]);
 				if(keycodes[0] == VKEYUI_KEY_TYPES.JOYSTICK)
-					radius = sprite_width / 2
+					radius = sprite_width / 2;
 			}
 		}
 	},
 	"sprite",
-	"sprite (name)"
+	"sprite (num)"
 );
 
 register_vkey_edit_command
@@ -154,7 +163,7 @@ register_vkey_edit_command
 		}
 	},
 	"stick_sprite",
-	"stick_sprite (name)",
+	"stick_sprite (num)",
 	VKEYUI_KEY_TYPES.JOYSTICK
 );
 
@@ -171,8 +180,9 @@ register_vkey_edit_command
 		}
 	},
 	"stick_scale_x",
-	"stick_scale_x (number)",
-	VKEYUI_KEY_TYPES.JOYSTICK
+	"stick_scale_x (num)",
+	VKEYUI_KEY_TYPES.JOYSTICK,
+	false
 );
 
 register_vkey_edit_command
@@ -188,8 +198,9 @@ register_vkey_edit_command
 		}
 	},
 	"stick_scale_y",
-	"stick_scale_y (number)",
-	VKEYUI_KEY_TYPES.JOYSTICK
+	"stick_scale_y (num)",
+	VKEYUI_KEY_TYPES.JOYSTICK,
+	false
 );
 
 register_vkey_edit_command
@@ -223,8 +234,9 @@ register_vkey_edit_command
 		}
 	},
 	"stick_deadzone_x",
-	"stick_deadzone_x (name)",
-	VKEYUI_KEY_TYPES.JOYSTICK
+	"stick_deadzone_x (num)",
+	VKEYUI_KEY_TYPES.JOYSTICK,
+	false
 );
 
 register_vkey_edit_command
@@ -240,8 +252,9 @@ register_vkey_edit_command
 		}
 	},
 	"stick_deadzone_y",
-	"stick_deadzone_y (name)",
-	VKEYUI_KEY_TYPES.JOYSTICK
+	"stick_deadzone_y (num)",
+	VKEYUI_KEY_TYPES.JOYSTICK,
+	false
 );
 
 register_vkey_edit_command
@@ -258,7 +271,7 @@ register_vkey_edit_command
 		}
 	},
 	"stick_deadzone",
-	"stick_deadzone (name)",
+	"stick_deadzone (num)",
 	VKEYUI_KEY_TYPES.JOYSTICK
 );
 
@@ -280,7 +293,7 @@ register_vkey_edit_command
 		}
 	},
 	"stick_color",
-	"stick_color r(number) g(number) b(number)",
+	"stick_color r(num) g(num) b(num)",
 	VKEYUI_KEY_TYPES.JOYSTICK
 );
 
@@ -297,7 +310,7 @@ register_vkey_edit_command
 		}
 	},
 	"image_speed",
-	"image_speed (number)",
+	"image_speed (number)"
 );
 
 register_vkey_edit_command
@@ -312,8 +325,8 @@ register_vkey_edit_command
 			}
 		}
 	},
-	"framenumber",
-	"framenumber (number)",
+	"frame",
+	"frame (num)"
 );
 
 register_vkey_edit_command
@@ -330,4 +343,6 @@ register_vkey_edit_command
 	},
 	"forceshowbind",
 	"forceshowbind (bool)",
+	VKEYUI_KEY_TYPES.BIND,
+	false
 );

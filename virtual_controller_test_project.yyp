@@ -48,6 +48,7 @@
     {"id":{"name":"spr_button_z","path":"sprites/spr_button_z/spr_button_z.yy",},},
     {"id":{"name":"spr_button_grid","path":"sprites/spr_button_grid/spr_button_grid.yy",},},
     {"id":{"name":"_string_trim","path":"scripts/_string_trim/_string_trim.yy",},},
+    {"id":{"name":"scr_startupcommand","path":"scripts/scr_startupcommand/scr_startupcommand.yy",},},
     {"id":{"name":"spr_button_cog_big","path":"sprites/spr_button_cog_big/spr_button_cog_big.yy",},},
     {"id":{"name":"FontDebug","path":"fonts/FontDebug/FontDebug.yy",},},
     {"id":{"name":"spr_button_grid_pressed","path":"sprites/spr_button_grid_pressed/spr_button_grid_pressed.yy",},},
