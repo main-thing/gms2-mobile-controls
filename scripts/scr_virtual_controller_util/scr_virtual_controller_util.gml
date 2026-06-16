@@ -99,7 +99,7 @@ function asset_get_index_vkey(name)
 
 function createvbutton(loadedbutton)
 {
-	
+	var orig_loadedbutton = loadedbutton;
 	for(var i = 0, _vars = variable_struct_get_names(loadedbutton); i < array_length(_vars); i++)
 	{
 		var _var = _vars[i];
@@ -117,7 +117,49 @@ function createvbutton(loadedbutton)
 	loadedbutton[$ "keycodes"][0] = VKEYUI_KEY_TYPES[$ loadedbutton[$ "keycodes"][0]];
 	
 	
-	var _keycodes = loadedbutton[$ "keycodes"]
+	var _keycodes = loadedbutton[$ "keycodes"];
+	if(is_control_blacklisted(_keycodes[0]))
+	{
+		if(_keycodes[0] != VKEYUI_KEY_TYPES.EDIT)
+			return;
+		
+		var found_any_edit_button = false;
+		with(obj_virtual_controller)
+		{
+			if(keycodes[0] == VKEYUI_KEY_TYPES.EDIT)
+			{
+				// this is both easier to read and harder to read at the same time
+				found_any_edit_button = true;
+				if
+				(
+					orig_loadedbutton[$ "sprite"] == undefined || 
+					(
+						orig_loadedbutton[$ "sprite"] != "spr_button_z_big" && 
+						asset_get_index_vkey(orig_loadedbutton[$ "sprite"]) == spr_button_z_big
+					)
+				)
+				{
+					loadedbutton[$ "sprite"] = spr_button_cog_big;
+				}
+				
+				// just in-case
+				loadedbutton[$ "x"] = clamp(loadedbutton[$ "x"], sprite_get_width(loadedbutton[$ "sprite"]) / 2, display_get_gui_width() + sprite_get_width(loadedbutton[$ "sprite"]) / 2);
+				loadedbutton[$ "y"] = clamp(loadedbutton[$ "y"], sprite_get_height(loadedbutton[$ "sprite"]) / 2, display_get_gui_height() + sprite_get_height(loadedbutton[$ "sprite"]) / 2);
+				
+				
+				var _vars_to_copy = variable_struct_get_names(loadedbutton);
+				for(var i = 0; i < array_length(_vars_to_copy); i++)
+				{
+					var _var = _vars_to_copy[i];
+					variable_instance_set(id, _var, loadedbutton[$ _var]);
+					show_debug_message("[VIRTUAL_CONTROLLER] Setting var {0} to {1} for edit button.", _var, string(loadedbutton[$ _var]));
+				}
+			}
+		}
+		
+		if(found_any_edit_button)
+			return;
+	}
 	if(_keycodes[0] == VKEYUI_KEY_TYPES.JOYSTICK)
 	{
 		loadedbutton[$ "spr_joystick"] = loadedbutton[$ "spr_joystick"] == undefined ? spr_button_joystick : asset_get_index_vkey(loadedbutton[$ "spr_joystick"]);
@@ -138,7 +180,7 @@ function virtual_key_save(exportdialog = false, save = false)
 	var mybuttons = array_create(0);
 	with(obj_virtual_controller) 
 	{
-		if(is_control_blacklisted(keycodes[0])) 
+		if(is_control_blacklisted(keycodes[0]) && keycodes[0] != VKEYUI_KEY_TYPES.EDIT) 
 			continue;
 		
 		var _vars = variable_instance_get_names(id);
@@ -578,16 +620,24 @@ function vkey_controls_edit_mode()
 {
 	if(global.vkeyui_movingvkeys)
 	{
-		if(is_control_blacklisted(keycodes[0]) || global.vkeyui_hoveringbutton) 
+		if(/*is_control_blacklisted(keycodes[0]) ||*/ global.vkeyui_hoveringbutton) 
 			return;
 		
-		if(position_meeting(device_mouse_x_to_gui(0), device_mouse_y_to_gui(0), self))
+		if(position_meeting(device_mouse_x_to_gui(0), device_mouse_y_to_gui(0), self) && !position_meeting(mouse_x, mouse_y, obj_virtual_controller_scale))
 		{
+			with(obj_virtual_controller_scale) instance_destroy();
+			
 			old_button_x = (x - device_mouse_x_to_gui(0));
 			old_button_y = (y - device_mouse_y_to_gui(0));
-			mouseon = 1;
+			mouseon = true;
 			global.vkeyui_selectedvbutton = self;
 			global.vkeyui_hoveringbutton = true;
+			with(instance_create_depth(x + sprite_width - sprite_xoffset, y + sprite_height - sprite_yoffset, VKEY_DEPTH - 1, obj_virtual_controller_scale))
+			{
+				object_id = other.id;
+				object_xscale = other.image_xscale;
+				object_yscale = other.image_yscale;
+			}
 		}
 	}
 }
@@ -622,24 +672,7 @@ function vkey_handle_special_buttons()
 		return;
 	
 	if(position_meeting(device_mouse_x_to_gui(0), device_mouse_y_to_gui(0), self))
-	{
-		if(keycodes[0] == VKEYUI_KEY_TYPES.EDIT)
-		{
-			global.vkeyui_movingvkeys = !global.vkeyui_movingvkeys;
-			
-			if(global.vkeyui_movingvkeys)
-			{
-				with(obj_virtual_controller_manager)
-					event_user(1);
-			}
-			else
-			{
-				virtual_key_save(false, true);
-				with(obj_virtual_controller_manager)
-					event_user(0);
-			}
-		}
-		
+	{	
 		if(global.vkeyui_movingvkeys)
 		{
 			switch(keycodes[0])
@@ -663,12 +696,24 @@ function vkey_handle_special_buttons()
 				break
 				case VKEYUI_KEY_TYPES.GRID:
 					global.vkeyui_gridmode = !global.vkeyui_gridmode
-					prompt = global.vkeyui_gridmode
 				break
 			}
 			
 		}
 		else if(keycodes[0] == VKEYUI_KEY_TYPES.DEBUG)
 			prompt = get_string_async("Debug ( help )", last_input);
+		else if(keycodes[0] == VKEYUI_KEY_TYPES.EDIT)
+		{
+			global.vkeyui_movingvkeys = true;
+			
+			if(global.vkeyui_movingvkeys)
+			{
+				with(obj_virtual_controller_manager)
+					event_user(1);
+				
+				instance_create_depth(display_get_gui_width() / 2 - VKEY_EDIT_UI_WIDTH / 2, 128, VKEY_DEPTH - 1, obj_virtual_controller_edit_ui);
+					
+			}
+		}
 	}
 }

@@ -15,8 +15,8 @@
   "managed": true,
   "overriddenProperties": [],
   "parent": {
-    "name": "Objects",
-    "path": "folders/Objects.yy",
+    "name": "mobilecontrols",
+    "path": "folders/Objects/mobilecontrols.yy",
   },
   "parentObjectId": null,
   "persistent": false,

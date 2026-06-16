@@ -7,9 +7,10 @@ input = noone;
 prompt = undefined;
 old_button_x = x;
 old_button_y = y;
+
 last_input = "";
 pressed = false;
-mouseon = 0;
+mouseon = false;
 touch_id = -1;
 
 depth = VKEY_DEPTH;

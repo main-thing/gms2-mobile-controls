@@ -9,8 +9,8 @@
   "managed": true,
   "overriddenProperties": [],
   "parent": {
-    "name": "Objects",
-    "path": "folders/Objects.yy",
+    "name": "exclude",
+    "path": "folders/Objects/exclude.yy",
   },
   "parentObjectId": null,
   "persistent": false,

@@ -6,7 +6,7 @@ if(global.vkeyui_movingvkeys)
 	
 	if(mouse_check_button_released(mb_left)) 
 	{
-		mouseon = 0;
+		mouseon = false;
 		global.vkeyui_hoveringbutton = false;
 	}
 		
@@ -19,6 +19,12 @@ if(global.vkeyui_movingvkeys)
 		{
 			x = round(x / global.vkeyui_gridsize) * global.vkeyui_gridsize;
 			y = round(y / global.vkeyui_gridsize) * global.vkeyui_gridsize;
+		}
+		
+		if(is_control_blacklisted(keycodes[0]))
+		{
+			x = clamp(x, 0 + sprite_get_width(sprite_index) / 2, display_get_gui_width() - sprite_get_width(sprite_index) / 2);
+			y = clamp(y, 0 + sprite_get_height(sprite_index) / 2, display_get_gui_height() - sprite_get_height(sprite_index) / 2);
 		}
 	}
 }

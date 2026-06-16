@@ -25,8 +25,8 @@
   "nineSlice": null,
   "origin": 4,
   "parent": {
-    "name": "mobilecontrols",
-    "path": "folders/Sprites/mobilecontrols.yy",
+    "name": "default",
+    "path": "folders/Sprites/mobilecontrols/default.yy",
   },
   "preMultiplyAlpha": false,
   "sequence": {
