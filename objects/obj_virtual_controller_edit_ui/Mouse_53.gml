@@ -82,6 +82,7 @@ if(point_in_rectangle
 	var _temp_text = clipboard_get_text();
 	// TODO: dynamically generate this string
 	prompt = get_string_async("load buttons: help, load, default, controls.png, [{\"x\": 928.0,...}]", ((clipboard_has_text() && (string_pos("[", _temp_text) == 1)) ? _temp_text : ""));		
+	prompt_type = VKEYUI_KEY_TYPES.LOAD;
 }
 
 // Close
