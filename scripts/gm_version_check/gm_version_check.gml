@@ -1,4 +1,9 @@
-#macro PRE_2023_GM ("2022.11.1.56" == GM_runtime_version ||\
+#macro PRE_2023_GM ("2022.0.3.99" == GM_runtime_version ||\
+"2022.0.3.98" == GM_runtime_version ||\
+"2022.0.2.49" == GM_runtime_version ||\
+"2022.0.1.30" == GM_runtime_version ||\
+"2022.0.0.12" == GM_runtime_version ||\
+"2022.11.1.56" == GM_runtime_version ||\
 "2022.11.0.54" == GM_runtime_version ||\
 "2022.9.1.51" == GM_runtime_version ||\
 "2022.9.0.49" == GM_runtime_version ||\

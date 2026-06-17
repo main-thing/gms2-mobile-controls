@@ -67,10 +67,10 @@ function docommand(commandstring, silentcommand = false, is_trigger = false)
 		var _cmd = _args[0];
 		array_delete(_args, 0, 1);
 	
-	
 		if(global.vkeyui_debug_table[$ _cmd] != undefined)
 		{
-			var _func = global.vkeyui_debug_table[$ _cmd][0];
+			// game gets confused if we don't do this
+			var _func = asset_get_index(script_get_name(global.vkeyui_debug_table[$ _cmd][0]));
 			script_execute_ext(_func, _args);
 		}
 	
