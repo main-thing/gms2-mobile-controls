@@ -562,7 +562,7 @@ function vkey_from_input(input)
 			
 		"escape" :
 		{
-			keycodes : [VKEYUI_KEY_TYPES.NONE, vk_enter],
+			keycodes : [VKEYUI_KEY_TYPES.NONE, vk_escape],
 			sprite : spr_button_escape_big
 		},
 			
