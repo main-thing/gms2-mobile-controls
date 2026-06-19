@@ -42,7 +42,8 @@ if(!variable_instance_exists(id, "joy_deadzone_y"))
 joy_blend = c_white;
 
 // init controls
-my_usual_alpha = 0.5;
+if(!variable_instance_exists(id, "my_usual_alpha"))
+	my_usual_alpha = 0.5;
 image_alpha = my_usual_alpha;
 persistent = true;
 vkey_init_input();
